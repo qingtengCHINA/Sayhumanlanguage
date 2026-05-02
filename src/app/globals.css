@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #F3F0EE;
+  color: #141413;
+  font-family: "Sofia Sans", Arial, sans-serif;
+}
