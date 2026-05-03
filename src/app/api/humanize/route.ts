@@ -312,7 +312,7 @@ export async function POST(request: NextRequest) {
 
     const modelUrl = process.env.API_URL || "https://token-plan-sgp.xiaomimimo.com/v1";
     const apiKey = process.env.API_KEY || "";
-    const modelName = process.env.MODEL_NAME || "MiMo-V2.5";
+    const modelName = process.env.MODEL_NAME || "mimo-v2.5-pro";
 
     if (!apiKey) {
       return NextResponse.json(
