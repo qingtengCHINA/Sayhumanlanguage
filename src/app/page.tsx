@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useCallback } from 'react';
-import { Upload, FileText, ArrowRight, Sparkles, RotateCcw, Copy, Check, Wand2, X } from 'lucide-react';
+import { Upload, FileText, ArrowRight, Sparkles, RotateCcw, Copy, Check, Wand2 } from 'lucide-react';
 
 export default function Home() {
   const [inputText, setInputText] = useState('');
@@ -9,10 +9,6 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [copied, setCopied] = useState(false);
   const [dragActive, setDragActive] = useState(false);
-  const [showSettings, setShowSettings] = useState(false);
-  const [apiUrl, setApiUrl] = useState('https://token-plan-sgp.xiaomimimo.com/v1');
-  const [apiKey, setApiKey] = useState('');
-  const [modelName, setModelName] = useState('MiMo-V2.5');
   const [error, setError] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -72,9 +68,7 @@ export default function Home() {
       const response = await fetch('/api/humanize', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          text: inputText,
-        }),
+        body: JSON.stringify({ text: inputText }),
       });
 
       const data = await response.json();
@@ -109,7 +103,7 @@ export default function Home() {
     <div className="min-h-screen bg-canvas">
       {/* Floating Nav Pill */}
       <nav className="sticky top-6 z-50 mx-auto max-w-4xl px-4">
-        <div className="flex items-center justify-between rounded-pill bg-white px-6 py-3 shadow-[rgba(0,0,0,0.04)_0px_4px_24px_0px]">
+        <div className="flex items-center justify-center rounded-pill bg-white px-6 py-3 shadow-[rgba(0,0,0,0.04)_0px_4px_24px_0px]">
           <div className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-signal">
               <Wand2 className="h-4 w-4 text-white" />
@@ -118,61 +112,8 @@ export default function Home() {
               讲人话
             </span>
           </div>
-          <button
-            onClick={() => setShowSettings(!showSettings)}
-            className="rounded-md px-3 py-1.5 text-sm font-medium text-slate hover:bg-bone transition-colors"
-          >
-            设置
-          </button>
         </div>
       </nav>
-
-      {/* Settings Panel */}
-      {showSettings && (
-        <div className="mx-auto max-w-4xl px-4 mt-4">
-          <div className="rounded-lg bg-white p-6 shadow-[rgba(0,0,0,0.04)_0px_4px_24px_0px]">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-medium text-ink">API 设置</h3>
-              <button onClick={() => setShowSettings(false)} className="text-slate hover:text-ink">
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-slate mb-1">API URL</label>
-                <input
-                  type="text"
-                  value={apiUrl}
-                  onChange={(e) => setApiUrl(e.target.value)}
-                  className="w-full rounded-md border border-dust bg-canvas px-4 py-2 text-sm text-ink focus:border-signal focus:outline-none"
-                  placeholder="https://token-plan-sgp.xiaomimimo.com/v1"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-slate mb-1">Model</label>
-                <input
-                  type="text"
-                  value={modelName}
-                  onChange={(e) => setModelName(e.target.value)}
-                  className="w-full rounded-md border border-dust bg-canvas px-4 py-2 text-sm text-ink focus:border-signal focus:outline-none"
-                  placeholder="MiMo-V2.5"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-slate mb-1">API Key</label>
-                <input
-                  type="password"
-                  value={apiKey}
-                  onChange={(e) => setApiKey(e.target.value)}
-                  className="w-full rounded-md border border-dust bg-canvas px-4 py-2 text-sm text-ink focus:border-signal focus:outline-none"
-                  placeholder="输入你的 API Key"
-                />
-                <p className="mt-1 text-xs text-slate">你也可以在 Vercel 环境变量中设置 API_KEY</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Hero Section */}
       <section className="mx-auto max-w-4xl px-4 pt-16 pb-8">
