@@ -12,7 +12,7 @@
 ## 技术栈
 
 - Next.js 14 + TypeScript + Tailwind CSS
-- MiMo API（小米 MiMo-V2.5 模型）
+- DeepSeek API（deepseek-v4-flash）
 - Mastercard 设计系统风格（暖色画布、药丸按钮、圆角卡片）
 
 ## 部署到 Vercel
@@ -38,9 +38,9 @@ git push -u origin main
 
 | 变量名 | 值 | 说明 |
 |--------|-----|------|
-| `API_URL` | `https://token-plan-sgp.xiaomimimo.com/v1` | MiMo API 地址 |
-| `API_KEY` | 你的 API Key | 从 [MiMo 平台](https://platform.xiaomimimo.com) 获取 |
-| `MODEL_NAME` | `MiMo-V2.5` | 模型名称 |
+| `API_URL` | `https://api.deepseek.com/chat/completions` | DeepSeek Chat Completions 地址（也可填 `https://api.deepseek.com`） |
+| `API_KEY` | 你的 API Key | 从 [DeepSeek 开放平台](https://platform.deepseek.com) 获取 |
+| `MODEL_NAME` | `deepseek-v4-flash` | 模型名称 |
 
 > API Key 仅存储在服务端，前端不会暴露任何敏感信息。
 
@@ -62,21 +62,21 @@ npm run dev
 本地开发需要创建 `.env.local` 文件：
 
 ```
-API_URL=https://token-plan-sgp.xiaomimimo.com/v1
+API_URL=https://api.deepseek.com/chat/completions
 API_KEY=你的API Key
-MODEL_NAME=MiMo-V2.5
+MODEL_NAME=deepseek-v4-flash
 ```
 
 打开 http://localhost:3000
 
 ## API 说明
 
-后端接口兼容 OpenAI Chat Completions 格式，默认使用 MiMo API：
+后端接口兼容 OpenAI Chat Completions 格式，默认使用 DeepSeek API：
 
-- Base URL: `https://token-plan-sgp.xiaomimimo.com/v1`
-- Model: `MiMo-V2.5`
+- Endpoint: `https://api.deepseek.com/chat/completions`
+- Model: `deepseek-v4-flash`
 
-切换其他 OpenAI 兼容的模型只需修改环境变量即可。
+切换其他 OpenAI 兼容的模型只需修改环境变量即可。`API_URL` 可以填完整 endpoint，也可以只填 base URL（代码会自动补上 `/chat/completions`）。
 
 ## 设计
 

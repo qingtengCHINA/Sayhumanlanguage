@@ -279,6 +279,14 @@ const SYSTEM_PROMPT = `你是一位文字编辑，专门识别和去除 AI 生�
 
 现在请处理用户提供的文本。`;
 
+function resolveChatCompletionsUrl(apiUrl: string): string {
+  const trimmed = apiUrl.trim().replace(/\/+$/, "");
+  if (trimmed.endsWith("/chat/completions")) {
+    return trimmed;
+  }
+  return `${trimmed}/chat/completions`;
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { text } = await request.json();
@@ -290,9 +298,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const modelUrl = process.env.API_URL || "https://token-plan-sgp.xiaomimimo.com/v1";
+    const modelUrl = resolveChatCompletionsUrl(
+      process.env.API_URL || "https://api.deepseek.com"
+    );
     const apiKey = process.env.API_KEY || "";
-    const modelName = process.env.MODEL_NAME || "mimo-v2.5-pro";
+    const modelName = process.env.MODEL_NAME || "deepseek-v4-flash";
 
     if (!apiKey) {
       return NextResponse.json(
@@ -301,7 +311,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const response = await fetch(modelUrl + "/chat/completions", {
+    const response = await fetch(modelUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -315,6 +325,7 @@ export async function POST(request: NextRequest) {
         ],
         temperature: 0.7,
         max_tokens: 8192,
+        thinking: { type: "disabled" },
       }),
     });
 
