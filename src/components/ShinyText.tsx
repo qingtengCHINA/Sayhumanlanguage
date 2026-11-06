@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { motion, useMotionValue, useAnimationFrame, useTransform } from 'motion/react';
+import { motion, useMotionValue, useAnimationFrame, useTransform, useReducedMotion } from 'motion/react';
 
 interface ShinyTextProps {
   text: string;
@@ -30,6 +30,7 @@ const ShinyText = ({
   direction = 'left',
   delay = 0
 }: ShinyTextProps) => {
+  const reduce = useReducedMotion();
   const [isPaused, setIsPaused] = useState(false);
   const progress = useMotionValue(0);
   const elapsedRef = useRef(0);
@@ -40,7 +41,7 @@ const ShinyText = ({
   const delayDuration = delay * 1000;
 
   useAnimationFrame((time: number) => {
-    if (disabled || isPaused) {
+    if (disabled || isPaused || reduce) {
       lastTimeRef.current = null;
       return;
     }
@@ -101,6 +102,14 @@ const ShinyText = ({
   const handleMouseLeave = useCallback(() => {
     if (pauseOnHover) setIsPaused(false);
   }, [pauseOnHover]);
+
+  if (disabled || reduce) {
+    return (
+      <span className={className} style={{ color, display: 'inline-block' }}>
+        {text}
+      </span>
+    );
+  }
 
   const gradientStyle = {
     backgroundImage: `linear-gradient(${spread}deg, ${color} 0%, ${color} 35%, ${shineColor} 50%, ${color} 65%, ${color} 100%)`,

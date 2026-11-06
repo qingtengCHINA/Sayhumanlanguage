@@ -1,16 +1,18 @@
 import type { Metadata } from "next";
-import { Sofia_Sans } from "next/font/google";
+import localFont from "next/font/local";
+import AppToaster from "@/components/AppToaster";
 import "./globals.css";
 
-const sofiaSans = Sofia_Sans({
-  variable: "--font-sofia",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+const geist = localFont({
+  src: "./fonts/GeistVF.woff",
+  variable: "--font-geist",
+  display: "swap",
+  weight: "100 900",
 });
 
 export const metadata: Metadata = {
-  title: "讲人话 — 去AI味儿",
-  description: "去除文本中的AI生成痕迹，让文字听起来更自然、更有人味儿",
+  title: "讲人话：去AI味儿",
+  description: "去掉套话、三段式和宣传腔，留下能读的句子。",
 };
 
 export default function RootLayout({
@@ -19,9 +21,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="zh-CN" className={`${sofiaSans.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-canvas text-ink font-sans">
+    <html lang="zh-CN" className={`${geist.variable} h-full antialiased`}>
+      <body className="min-h-full bg-page font-sans text-ink">
         {children}
+        <AppToaster />
       </body>
     </html>
   );
