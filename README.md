@@ -4,7 +4,7 @@
 
 ## 功能
 
-- 粘贴文本或拖拽导入 .txt / .md 文件
+- 粘贴文本或拖拽导入 .txt / .md / .docx 文件
 - 内置 Humanizer-zh 系统提示词，自动识别并去除 24 种 AI 写作痕迹
 - 一键复制改写结果
 - 零配置开箱即用（API Key 由服务端环境变量管理，用户无需任何设置）
@@ -12,7 +12,7 @@
 ## 技术栈
 
 - Next.js 14 + TypeScript + Tailwind CSS
-- DeepSeek API（deepseek-v4-flash）
+- Oases API 网关（claude-haiku-5-5）
 - Mastercard 设计系统风格（暖色画布、药丸按钮、圆角卡片）
 
 ## 部署到 Vercel
@@ -34,13 +34,12 @@ git push -u origin main
 
 ### 3. 配置环境变量
 
-在点击 Deploy 之前，展开 **Environment Variables**，添加以下三个变量：
+在点击 Deploy 之前，展开 **Environment Variables**，添加以下变量：
 
 | 变量名 | 值 | 说明 |
 |--------|-----|------|
-| `API_URL` | `https://api.deepseek.com/chat/completions` | DeepSeek Chat Completions 地址（也可填 `https://api.deepseek.com`） |
-| `API_KEY` | 你的 API Key | 从 [DeepSeek 开放平台](https://platform.deepseek.com) 获取 |
-| `MODEL_NAME` | `deepseek-v4-flash` | 模型名称 |
+| `API_KEY` | 你的 Oases API Key | 网关会替换为对应的模型服务商 |
+| `MODEL_NAME` | `claude-haiku-5-5` | 模型名称（可选，默认即此值） |
 
 > API Key 仅存储在服务端，前端不会暴露任何敏感信息。
 
@@ -62,31 +61,37 @@ npm run dev
 本地开发需要创建 `.env.local` 文件：
 
 ```
-API_URL=https://api.deepseek.com/chat/completions
-API_KEY=你的API Key
-MODEL_NAME=deepseek-v4-flash
+API_KEY=你的Oases API Key
+MODEL_NAME=claude-haiku-5-5
 ```
 
 打开 http://localhost:3000
 
 ## API 说明
 
-后端接口兼容 OpenAI Chat Completions 格式，默认使用 DeepSeek API：
+后端走 Oases 统一网关（OpenAI Chat Completions 兼容协议）：
 
-- Endpoint: `https://api.deepseek.com/chat/completions`
-- Model: `deepseek-v4-flash`
+- Endpoint: `https://api.oases.dev/v1/chat/completions`
+- Model: `claude-haiku-5-5`
 
-切换其他 OpenAI 兼容的模型只需修改环境变量即可。`API_URL` 可以填完整 endpoint，也可以只填 base URL（代码会自动补上 `/chat/completions`）。
+切换其他模型只需修改 `MODEL_NAME` 环境变量。
+
+## 防护
+
+- 每 IP 每分钟最多 10 次请求（内存限流）
+- 输入文本上限 20000 字
+- 上游请求 90 秒超时
+- 结果被 `max_tokens` 截断时前端会提示
 
 ## 设计
 
 基于 Mastercard 设计系统：
 
-- Canvas Cream (`#F3F0EE`) 暖色画布背景
-- Ink Black (`#141413`) 主色调
-- Signal Orange (`#CF4500`) 点缀色
+- Canvas Cream 暖色画布背景
+- Ink Black 主色调
+- Signal Orange 点缀色
 - 圆角药丸形状按钮和导航
-- Sofia Sans 字体
+- Geist 字体 + 系统中文字体
 
 ## License
 

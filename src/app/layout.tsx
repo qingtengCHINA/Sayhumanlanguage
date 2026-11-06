@@ -13,6 +13,17 @@ const geist = localFont({
 export const metadata: Metadata = {
   title: "讲人话：去AI味儿",
   description: "去掉套话、三段式和宣传腔，留下能读的句子。",
+  openGraph: {
+    title: "讲人话：去AI味儿",
+    description: "去掉套话、三段式和宣传腔，留下能读的句子。",
+    type: "website",
+    locale: "zh_CN",
+  },
+  twitter: {
+    card: "summary",
+    title: "讲人话：去AI味儿",
+    description: "去掉套话、三段式和宣传腔，留下能读的句子。",
+  },
 };
 
 export default function RootLayout({

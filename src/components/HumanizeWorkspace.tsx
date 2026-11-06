@@ -33,6 +33,7 @@ export default function HumanizeWorkspace() {
   const [fileName, setFileName] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const abortRef = useRef<AbortController | null>(null);
+  const dragDepthRef = useRef(0);
 
   const handleFile = useCallback(async (file: File) => {
     const name = file.name.toLowerCase();
@@ -42,6 +43,10 @@ export default function HumanizeWorkspace() {
       const reader = new FileReader();
       reader.onload = (e) => {
         setInputText((e.target?.result as string) || "");
+      };
+      reader.onerror = () => {
+        setFileName("");
+        toast.error("读取文件失败，请重试");
       };
       reader.readAsText(file);
       return;
@@ -71,10 +76,12 @@ export default function HumanizeWorkspace() {
   const handleDrag = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (e.type === "dragenter" || e.type === "dragover") {
+    if (e.type === "dragenter") {
+      dragDepthRef.current += 1;
       setDragActive(true);
     } else if (e.type === "dragleave") {
-      setDragActive(false);
+      dragDepthRef.current = Math.max(0, dragDepthRef.current - 1);
+      if (dragDepthRef.current === 0) setDragActive(false);
     }
   }, []);
 
@@ -82,6 +89,7 @@ export default function HumanizeWorkspace() {
     (e: React.DragEvent) => {
       e.preventDefault();
       e.stopPropagation();
+      dragDepthRef.current = 0;
       setDragActive(false);
       const files = e.dataTransfer.files;
       if (files && files[0]) {
@@ -92,6 +100,7 @@ export default function HumanizeWorkspace() {
   );
 
   const handleHumanize = useCallback(async () => {
+    if (isLoading) return;
     if (!inputText.trim()) {
       toast.error("请先输入或导入文本");
       return;
@@ -102,7 +111,6 @@ export default function HumanizeWorkspace() {
     abortRef.current = controller;
 
     setIsLoading(true);
-    setOutputText("");
 
     try {
       const response = await fetch("/api/humanize", {
@@ -119,6 +127,9 @@ export default function HumanizeWorkspace() {
       }
 
       setOutputText(data.result || "");
+      if (data.truncated) {
+        toast.warning("文本较长，结果可能被截断，建议分段改写");
+      }
     } catch (err: unknown) {
       if (err instanceof DOMException && err.name === "AbortError") return;
       const message = err instanceof Error ? err.message : "网络错误，请稍后重试";
@@ -126,7 +137,7 @@ export default function HumanizeWorkspace() {
     } finally {
       setIsLoading(false);
     }
-  }, [inputText]);
+  }, [inputText, isLoading]);
 
   const handleCopy = useCallback(async () => {
     try {
@@ -286,7 +297,7 @@ export default function HumanizeWorkspace() {
                   animate={{ opacity: 1 }}
                   exit={reduce ? undefined : { opacity: 0 }}
                   transition={panelEnter}
-                  className="flex h-72 flex-col items-center justify-center gap-2 text-line md:h-80"
+                  className="flex h-72 flex-col items-center justify-center gap-2 text-muted/80 md:h-80"
                 >
                   <p className="text-xs">改写后的正文会出现在这里</p>
                 </motion.div>

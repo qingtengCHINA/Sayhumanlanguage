@@ -183,9 +183,15 @@ export default function LineWaves({
     let currentMouse = [0.5, 0.5];
     // eslint-disable-next-line prefer-const
     let targetMouse = [0.5, 0.5];
+    let canvasRect: DOMRect | null = null;
+
+    function cacheCanvasRect() {
+      canvasRect = gl.canvas.getBoundingClientRect();
+    }
 
     function handleMouseMove(e: MouseEvent) {
-      const rect = gl.canvas.getBoundingClientRect();
+      if (!canvasRect) cacheCanvasRect();
+      const rect = canvasRect!;
       targetMouse = [
         (e.clientX - rect.left) / rect.width,
         1.0 - (e.clientY - rect.top) / rect.height
@@ -198,6 +204,7 @@ export default function LineWaves({
 
     function resize() {
       renderer.setSize(container.offsetWidth, container.offsetHeight);
+      canvasRect = null;
       if (program) {
         program.uniforms.uResolution.value = [gl.canvas.width, gl.canvas.height, gl.canvas.width / gl.canvas.height];
       }
@@ -235,15 +242,35 @@ export default function LineWaves({
     container.appendChild(gl.canvas);
 
     if (enableMouseInteraction) {
+      cacheCanvasRect();
       window.addEventListener('mousemove', handleMouseMove);
       window.addEventListener('mouseleave', handleMouseLeave);
     }
+
+    // 页面不可见或滚出视口时暂停渲染，省电
+    let isVisible = true;
+    const lastFrameRef = { current: null as number | null };
+    const visibilityObserver = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting;
+        if (isVisible) lastFrameRef.current = null;
+      },
+      { threshold: 0 }
+    );
+    visibilityObserver.observe(container);
 
     let animationFrameId: number;
 
     function update(time: number) {
       animationFrameId = requestAnimationFrame(update);
-      program.uniforms.uTime.value = time * 0.001;
+      if (!isVisible) {
+        lastFrameRef.current = time;
+        return;
+      }
+      if (lastFrameRef.current !== null) {
+        program.uniforms.uTime.value += Math.min(time - lastFrameRef.current, 50) * 0.001;
+      }
+      lastFrameRef.current = time;
 
       if (enableMouseInteraction) {
         currentMouse[0] += 0.05 * (targetMouse[0] - currentMouse[0]);
@@ -261,6 +288,7 @@ export default function LineWaves({
 
     return () => {
       cancelAnimationFrame(animationFrameId);
+      visibilityObserver.disconnect();
       window.removeEventListener('resize', resize);
       if (enableMouseInteraction) {
         window.removeEventListener('mousemove', handleMouseMove);

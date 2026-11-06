@@ -279,30 +279,75 @@ const SYSTEM_PROMPT = `你是一位文字编辑，专门识别和去除 AI 生�
 
 现在请处理用户提供的文本。`;
 
-function resolveChatCompletionsUrl(apiUrl: string): string {
-  const trimmed = apiUrl.trim().replace(/\/+$/, "");
-  if (trimmed.endsWith("/chat/completions")) {
-    return trimmed;
+const OASES_URL = "https://api.oases.dev/v1/chat/completions";
+const DEFAULT_MODEL = "claude-haiku-5-5";
+const MAX_INPUT_CHARS = 20000;
+const UPSTREAM_TIMEOUT_MS = 90_000;
+
+function getClientIp(request: NextRequest): string {
+  const forwarded = request.headers.get("x-forwarded-for");
+  if (forwarded) {
+    return forwarded.split(",")[0].trim();
   }
-  return `${trimmed}/chat/completions`;
+  return request.headers.get("x-real-ip") || "unknown";
+}
+
+// 简单内存限流：每 IP 每分钟最多 10 次。Serverless 多实例下各自计数，
+// 门槛叠加后仍能挡住单 IP 刷量，足够个人工具使用。
+const RATE_LIMIT_MAX = 10;
+const RATE_LIMIT_WINDOW_MS = 60_000;
+const rateBuckets = new Map<string, { count: number; resetAt: number }>();
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const bucket = rateBuckets.get(ip);
+  if (!bucket || bucket.resetAt <= now) {
+    rateBuckets.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+    return false;
+  }
+  bucket.count += 1;
+  return bucket.count > RATE_LIMIT_MAX;
+}
+
+// 防止限流表无限增长
+function pruneRateBuckets(now: number) {
+  if (rateBuckets.size < 1000) return;
+  for (const [ip, bucket] of rateBuckets) {
+    if (bucket.resetAt <= now) rateBuckets.delete(ip);
+  }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const { text } = await request.json();
+    const now = Date.now();
+    pruneRateBuckets(now);
+    const ip = getClientIp(request);
+    if (isRateLimited(ip)) {
+      return NextResponse.json(
+        { error: "请求太频繁，请稍后再试" },
+        { status: 429 }
+      );
+    }
 
-    if (!text) {
+    const body = await request.json().catch(() => null);
+    const text = body?.text;
+
+    if (typeof text !== "string" || !text.trim()) {
       return NextResponse.json(
         { error: "缺少必要参数：text" },
         { status: 400 }
       );
     }
 
-    const modelUrl = resolveChatCompletionsUrl(
-      process.env.API_URL || "https://api.deepseek.com"
-    );
+    if (text.length > MAX_INPUT_CHARS) {
+      return NextResponse.json(
+        { error: `文本过长（${text.length} 字），请控制在 ${MAX_INPUT_CHARS} 字以内` },
+        { status: 413 }
+      );
+    }
+
     const apiKey = process.env.API_KEY || "";
-    const modelName = process.env.MODEL_NAME || "deepseek-v4-flash";
+    const modelName = process.env.MODEL_NAME || DEFAULT_MODEL;
 
     if (!apiKey) {
       return NextResponse.json(
@@ -311,7 +356,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const response = await fetch(modelUrl, {
+    const response = await fetch(OASES_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -325,8 +370,8 @@ export async function POST(request: NextRequest) {
         ],
         temperature: 0.7,
         max_tokens: 8192,
-        thinking: { type: "disabled" },
       }),
+      signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS),
     });
 
     if (!response.ok) {
@@ -339,9 +384,26 @@ export async function POST(request: NextRequest) {
 
     const data = await response.json();
     const result = data.choices?.[0]?.message?.content || "";
+    const finishReason = data.choices?.[0]?.finish_reason;
 
-    return NextResponse.json({ result });
+    if (!result) {
+      return NextResponse.json(
+        { error: "AI 返回了空结果，请重试" },
+        { status: 502 }
+      );
+    }
+
+    return NextResponse.json({
+      result,
+      truncated: finishReason === "length",
+    });
   } catch (err: unknown) {
+    if (err instanceof DOMException && err.name === "TimeoutError") {
+      return NextResponse.json(
+        { error: "AI 处理超时，请缩短文本后重试" },
+        { status: 504 }
+      );
+    }
     const message = err instanceof Error ? err.message : "服务器内部错误";
     return NextResponse.json(
       { error: message },
