@@ -36,8 +36,8 @@ export default function HeroIntro() {
           text="去掉套话、三段式和宣传腔，留下能读的句子。"
           speed={3}
           delay={1.2}
-          color="#5E5B55"
-          shineColor="#B8431F"
+          color="#93A0B4"
+          shineColor="#67E8F9"
           spread={120}
           direction="left"
         />

@@ -9,13 +9,13 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        page: "#E6E4DE",
-        surface: "#F4F3EE",
-        ink: "#171614",
-        muted: "#5E5B55",
-        line: "#CFCCC4",
-        accent: "#B8431F",
-        "accent-hover": "#A33B1B",
+        page: "#04060A",
+        surface: "#0E131C",
+        ink: "#E7ECF5",
+        muted: "#93A0B4",
+        line: "#1C2534",
+        accent: "#D4501F",
+        "accent-hover": "#E2602C",
       },
       fontFamily: {
         sans: [
@@ -27,6 +27,13 @@ const config: Config = {
           "Noto Sans SC",
           "Microsoft YaHei",
           "sans-serif",
+        ],
+        mono: [
+          "var(--font-geist-mono)",
+          "ui-monospace",
+          "SFMono-Regular",
+          "Menlo",
+          "monospace",
         ],
       },
       borderRadius: {

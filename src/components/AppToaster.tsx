@@ -11,7 +11,7 @@ export default function AppToaster() {
       toastOptions={{
         classNames: {
           toast:
-            "!bg-surface !text-ink !border !border-line !shadow-[0_8px_24px_rgba(23,22,20,0.08)] !rounded-xl",
+            "!bg-surface !text-ink !border !border-line !shadow-[0_8px_24px_rgba(0,0,0,0.45)] !rounded-xl",
           title: "!text-ink !text-sm",
           description: "!text-muted",
         },

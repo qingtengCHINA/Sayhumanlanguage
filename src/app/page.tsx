@@ -1,11 +1,11 @@
-import AmbientWaves from "@/components/AmbientWaves";
+import OceanBackground from "@/components/OceanBackground";
 import HeroIntro from "@/components/HeroIntro";
 import HumanizeWorkspace from "@/components/HumanizeWorkspace";
 
 export default function Home() {
   return (
     <div className="relative min-h-dvh bg-page">
-      <AmbientWaves />
+      <OceanBackground />
 
       <div className="relative z-10">
         <a
@@ -99,9 +99,9 @@ export default function Home() {
                 </p>
               </article>
 
-              <article className="rounded-2xl bg-ink p-6 text-surface md:col-span-2">
-                <h3 className="text-lg font-medium">直接复制</h3>
-                <p className="mt-2 text-sm leading-[1.75] text-surface/70">
+              <article className="rounded-2xl border border-accent/30 bg-accent/10 p-6 backdrop-blur-md md:col-span-2">
+                <h3 className="text-lg font-medium text-ink">直接复制</h3>
+                <p className="mt-2 text-sm leading-[1.75] text-muted">
                   结果区只有改写后的文章，没有总结，没有分数。
                 </p>
               </article>
@@ -109,7 +109,7 @@ export default function Home() {
           </section>
         </main>
 
-        <footer className="bg-ink py-12 text-surface">
+        <footer className="border-t border-line bg-page/70 py-12 text-ink">
           <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 px-5 text-center md:px-8">
             <p className="flex items-center gap-2 text-sm font-medium">
               <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-accent text-[11px] text-surface">
@@ -117,13 +117,13 @@ export default function Home() {
               </span>
               讲人话
             </p>
-            <p className="text-xs leading-[1.7] text-surface/55">
+            <p className="text-xs leading-[1.7] text-muted">
               基于{" "}
               <a
                 href="https://github.com/op7418/Humanizer-zh"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="underline decoration-surface/30 underline-offset-2 hover:text-surface"
+                className="underline decoration-line underline-offset-2 hover:text-ink"
               >
                 Humanizer-zh
               </a>
@@ -132,7 +132,7 @@ export default function Home() {
                 href="https://qingtengstudio.com/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="underline decoration-surface/30 underline-offset-2 hover:text-surface"
+                className="underline decoration-line underline-offset-2 hover:text-ink"
               >
                 QingTengStudio
               </a>{" "}

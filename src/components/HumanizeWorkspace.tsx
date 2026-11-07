@@ -110,6 +110,7 @@ export default function HumanizeWorkspace() {
     const controller = new AbortController();
     abortRef.current = controller;
 
+    window.dispatchEvent(new Event("ocean:pulse"));
     setIsLoading(true);
 
     try {
@@ -168,7 +169,7 @@ export default function HumanizeWorkspace() {
   return (
     <div
       id="workspace"
-      className="flex w-full scroll-mt-24 flex-col gap-4 rounded-2xl border border-line bg-surface/90 p-4 shadow-[0_12px_40px_rgba(23,22,20,0.06)] md:p-5"
+      className="flex w-full scroll-mt-24 flex-col gap-4 rounded-2xl border border-line bg-surface/90 p-4 shadow-[0_12px_40px_rgba(0,0,0,0.35)] md:p-5"
     >
       <div className="grid gap-6 md:grid-cols-2">
         <section className="flex min-h-0 flex-col gap-2">
@@ -222,6 +223,7 @@ export default function HumanizeWorkspace() {
               aria-labelledby="source-heading"
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
+              onInput={() => window.dispatchEvent(new Event("ocean:typing"))}
               onKeyDown={onKeyDown}
               placeholder="粘贴文本到这里，或把文件拖进来。支持 txt、md、doc、docx。"
               className="h-72 w-full resize-none rounded-xl bg-transparent p-4 text-sm leading-[1.75] text-ink placeholder:text-muted/70 focus:outline-none md:h-80"

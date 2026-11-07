@@ -10,6 +10,13 @@ const geist = localFont({
   weight: "100 900",
 });
 
+const geistMono = localFont({
+  src: "./fonts/GeistMonoVF.woff",
+  variable: "--font-geist-mono",
+  display: "swap",
+  weight: "100 900",
+});
+
 export const metadata: Metadata = {
   title: "讲人话：去AI味儿",
   description: "去掉套话、三段式和宣传腔，留下能读的句子。",
@@ -32,7 +39,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="zh-CN" className={`${geist.variable} h-full antialiased`}>
+    <html lang="zh-CN" className={`${geist.variable} ${geistMono.variable} h-full antialiased`}>
       <body className="min-h-full bg-page font-sans text-ink">
         {children}
         <AppToaster />
