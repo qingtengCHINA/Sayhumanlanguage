@@ -289,6 +289,10 @@ const MAX_INPUT_CHARS = 20000;
 const UPSTREAM_TIMEOUT_MS = 90_000;
 
 function getClientIp(request: NextRequest): string {
+  // Cloudflare Workers：cf-connecting-ip 是真实访客 IP
+  const cf = request.headers.get("cf-connecting-ip");
+  if (cf) return cf.trim();
+  // Vercel：x-forwarded-for
   const forwarded = request.headers.get("x-forwarded-for");
   if (forwarded) {
     return forwarded.split(",")[0].trim();
@@ -355,7 +359,7 @@ export async function POST(request: NextRequest) {
 
     if (!apiKey) {
       return NextResponse.json(
-        { error: "服务器未配置 API Key，请在 Vercel 环境变量中设置 API_KEY" },
+        { error: "服务器未配置 API Key，请在部署平台的环境变量中设置 API_KEY" },
         { status: 500 }
       );
     }

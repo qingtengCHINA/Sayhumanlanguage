@@ -51,6 +51,21 @@ git push -u origin main
 
 之后每次 `git push`，Vercel 会自动重新部署。
 
+## 部署到 Cloudflare Workers（可选，国内可达性更好）
+
+```bash
+npm install
+npm run deploy   # 首次会引导 wrangler login
+```
+
+然后在 Cloudflare 控制台：
+
+1. Workers & Pages → `jiang-ren-hua` → Settings → **Variables and Secrets** → 添加 `API_KEY`（类型选 Secret）
+2. Settings → **Domains & Routes** → Add Custom Domain → 填子域名（如 `say.qingtengstudio.com`），要求主域名托管在 Cloudflare DNS
+3. 也可以在 Workers Builds 里连接 GitHub 仓库实现推送自动部署（构建命令 `npx opennextjs-cloudflare build`）
+
+Vercel 部署仍然保留，两个平台可以并行。
+
 ## 本地开发
 
 ```bash
