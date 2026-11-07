@@ -127,6 +127,11 @@ export default function HumanizeWorkspace() {
         throw new Error(data.error || "请求失败");
       }
 
+      if (data.refused) {
+        toast.error(data.reason || "这段内容无法改写");
+        return;
+      }
+
       setOutputText(data.result || "");
       if (data.truncated) {
         toast.warning("文本较长，结果可能被截断，建议分段改写");
@@ -181,7 +186,7 @@ export default function HumanizeWorkspace() {
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium text-muted transition-colors duration-160 ease-out hover:bg-page hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium text-muted transition-colors duration-160 ease-out hover:bg-page hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
               >
                 <Upload className="h-3.5 w-3.5" strokeWidth={1.75} />
                 导入
@@ -200,7 +205,7 @@ export default function HumanizeWorkspace() {
                 <button
                   type="button"
                   onClick={handleReset}
-                  className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium text-muted transition-colors duration-160 ease-out hover:bg-page hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                  className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium text-muted transition-colors duration-160 ease-out hover:bg-page hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
                 >
                   <RotateCcw className="h-3.5 w-3.5" strokeWidth={1.75} />
                   清空
@@ -246,7 +251,7 @@ export default function HumanizeWorkspace() {
               <button
                 type="button"
                 onClick={() => void handleCopy()}
-                className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium text-muted transition-colors duration-160 ease-out hover:bg-page hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium text-muted transition-colors duration-160 ease-out hover:bg-page hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
               >
                 {copied ? (
                   <>

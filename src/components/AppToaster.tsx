@@ -8,6 +8,7 @@ export default function AppToaster() {
       theme="light"
       position="bottom-center"
       visibleToasts={3}
+      offset="calc(24px + env(safe-area-inset-bottom, 0px))"
       toastOptions={{
         classNames: {
           toast:

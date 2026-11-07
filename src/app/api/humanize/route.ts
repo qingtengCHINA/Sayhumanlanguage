@@ -277,6 +277,10 @@ const SYSTEM_PROMPT = `你是一位文字编辑，专门识别和去除 AI 生�
 
 **只输出改写后的文本。** 不要输出改写总结、质量评分、评语、所做更改说明，或任何其他附加内容。直接输出改写后的文章正文。
 
+**纯文本输出，禁止一切标记语言：** 不使用 Markdown 加粗（\*\*）、斜体、标题（#）、列表符号（-、\*、1.）和引用符号（>）。原文如果是列表或小标题，改写成连贯的句子。保留原有的分段换行。
+
+**唯一例外——无法处理时：** 如果文本不适合改写（违法、有害、不应协助的内容等），整个输出只能是一行，以「[无法处理]」开头，后接一句原因，例如：「[无法处理] 该内容涉及规避服务条款，无法协助改写」。除此之外的任何情况下，都不得输出拒绝、解释、开场白或结尾语。
+
 现在请处理用户提供的文本。`;
 
 const OASES_URL = "https://api.oases.dev/v1/chat/completions";
@@ -383,14 +387,26 @@ export async function POST(request: NextRequest) {
     }
 
     const data = await response.json();
-    const result = data.choices?.[0]?.message?.content || "";
+    const raw = data.choices?.[0]?.message?.content || "";
     const finishReason = data.choices?.[0]?.finish_reason;
 
-    if (!result) {
+    if (!raw) {
       return NextResponse.json(
         { error: "AI 返回了空结果，请重试" },
         { status: 502 }
       );
+    }
+
+    const result = raw
+      .replace(/\*\*/g, "") // 模型偶尔漏出的加粗标记，一律剥掉
+      .trim();
+
+    // 拒绝走独立通道：不进结果区，前端以提示呈现
+    if (result.startsWith("[无法处理]")) {
+      return NextResponse.json({
+        refused: true,
+        reason: result.replace(/^\[无法处理\]\s*/, "").trim(),
+      });
     }
 
     return NextResponse.json({

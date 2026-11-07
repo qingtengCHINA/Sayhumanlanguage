@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import AppToaster from "@/components/AppToaster";
 import "./globals.css";
@@ -31,6 +31,15 @@ export const metadata: Metadata = {
     title: "讲人话：去AI味儿",
     description: "去掉套话、三段式和宣传腔，留下能读的句子。",
   },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover", // 铺满到刘海/灵动岛，配合 env(safe-area-inset-*) 回退内容
+  interactiveWidget: "resizes-content", // Android 键盘弹出时压缩布局，和 iOS 行为一致
+  themeColor: "#04060A",
+  colorScheme: "dark",
 };
 
 export default function RootLayout({

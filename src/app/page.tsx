@@ -15,7 +15,7 @@ export default function Home() {
           跳到改写区
         </a>
 
-        <header className="glass sticky top-0 z-40 border-b border-line/70 bg-page/75 backdrop-blur-md">
+        <header className="glass sticky top-0 z-40 border-b border-line/70 bg-page/75 backdrop-blur-md pt-[env(safe-area-inset-top)]">
           <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 md:px-8">
             <a href="#top" className="flex items-center gap-2 text-sm font-medium text-ink">
               <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-accent text-[11px] font-semibold text-surface">
@@ -92,14 +92,7 @@ export default function Home() {
                 </p>
               </article>
 
-              <article className="rounded-2xl border border-line bg-surface p-6 md:col-span-2">
-                <h3 className="text-lg font-medium text-ink">密钥不进页面</h3>
-                <p className="mt-2 text-sm leading-[1.75] text-muted">
-                  模型请求走服务端。浏览器只提交原文。
-                </p>
-              </article>
-
-              <article className="rounded-2xl border border-accent/30 bg-accent/10 p-6 backdrop-blur-md md:col-span-2">
+              <article className="rounded-2xl border border-accent/30 bg-accent/10 p-6 backdrop-blur-md md:col-span-4">
                 <h3 className="text-lg font-medium text-ink">直接复制</h3>
                 <p className="mt-2 text-sm leading-[1.75] text-muted">
                   结果区只有改写后的文章，没有总结，没有分数。
@@ -109,7 +102,7 @@ export default function Home() {
           </section>
         </main>
 
-        <footer className="border-t border-line bg-page/70 py-12 text-ink">
+        <footer className="border-t border-line bg-page/70 pb-[calc(3rem+env(safe-area-inset-bottom))] pt-12 text-ink">
           <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 px-5 text-center md:px-8">
             <p className="flex items-center gap-2 text-sm font-medium">
               <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-accent text-[11px] text-surface">

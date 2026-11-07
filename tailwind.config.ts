@@ -1,6 +1,10 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
+  future: {
+    // hover: 变体只在真有悬停能力的设备上生效，触屏不会有"点完粘住"的 hover 态
+    hoverOnlyWhenSupported: true,
+  },
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
