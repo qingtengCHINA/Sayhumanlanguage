@@ -14,7 +14,7 @@ const delays = Array.from({ length: 9 }, (_, i) => {
   return (c + Math.abs(r - 1)) * 90;
 });
 
-function useElapsed(active: boolean) {
+export function useElapsed(active: boolean) {
   const [ds, setDs] = useState(0);
 
   useEffect(() => {

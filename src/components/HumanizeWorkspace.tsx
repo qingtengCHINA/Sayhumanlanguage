@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { toast } from "sonner";
-import RewriteLoader from "@/components/RewriteLoader";
+import DitherMind from "@/components/DitherMind";
 
 const panelEnter = {
   duration: 0.2,
@@ -282,7 +282,7 @@ export default function HumanizeWorkspace() {
                   transition={panelEnter}
                   className="flex h-72 items-center justify-center md:h-80"
                 >
-                  <RewriteLoader />
+                  <DitherMind />
                 </motion.div>
               ) : outputText ? (
                 <motion.div
