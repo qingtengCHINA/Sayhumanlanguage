@@ -1,4 +1,5 @@
 import OceanBackground from "@/components/OceanBackground";
+import { BrandLogo } from "@/components/logo/BrandLogo";
 import HeroIntro from "@/components/HeroIntro";
 import HumanizeWorkspace from "@/components/HumanizeWorkspace";
 
@@ -17,10 +18,8 @@ export default function Home() {
 
         <header className="glass sticky top-0 z-40 border-b border-line/70 bg-page/75 backdrop-blur-md pt-[env(safe-area-inset-top)]">
           <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 md:px-8">
-            <a href="#top" className="flex items-center gap-2 text-sm font-medium text-ink">
-              <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-accent text-[11px] font-semibold text-surface">
-                话
-              </span>
+            <a href="#top" className="flex items-center gap-2.5 text-sm font-medium text-ink">
+              <BrandLogo className="h-7 w-7" />
               讲人话
             </a>
             <nav className="flex items-center gap-6 text-sm text-muted">
@@ -104,10 +103,8 @@ export default function Home() {
 
         <footer className="border-t border-line bg-page/70 pb-[calc(3rem+env(safe-area-inset-bottom))] pt-12 text-ink">
           <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 px-5 text-center md:px-8">
-            <p className="flex items-center gap-2 text-sm font-medium">
-              <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-accent text-[11px] text-surface">
-                话
-              </span>
+            <p className="flex items-center gap-2.5 text-sm font-medium">
+              <BrandLogo className="h-7 w-7" />
               讲人话
             </p>
             <p className="text-xs leading-[1.7] text-muted">
